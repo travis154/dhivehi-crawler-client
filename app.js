@@ -47,7 +47,7 @@ app.get('/fetch', function(req, res){
 			content:{}
 		};
 		var sources_build = req.query.sources ? req.query.sources.split(',') : sources;
-		var limit = req.query.limit || 5;
+		var limit = req.query.limit ? req.query.limit -1 : 5;
 		
 		//remove empty values
 		sources_build.clean("");
