@@ -24,6 +24,12 @@ app.configure(function(){
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
+  app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+  });
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
 });
@@ -74,7 +80,25 @@ app.get('/fetch', function(req, res){
 		});
 	});
 
-})
+});
+
+app.get('/fetch/:source/:url', function(req,res){
+	var source = req.params.source
+	 ,  url = req.params.url;
+	 client.hget(source, url, function(err, data){
+	 	if(err){
+	 		return res.json({error:"An error occured"});
+	 	}
+	 	if(data == null){
+	 		return res.json({error:"Article not found!"});
+	 	}
+	 	var obj = {};
+ 		obj.data = JSON.parse(data);
+ 		res.json(obj);
+	 });
+});
+
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
