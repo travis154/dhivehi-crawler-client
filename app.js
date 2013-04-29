@@ -43,11 +43,104 @@ app.get('/', function(req,res){
 });
 app.get('/sources', function(req,res){
 	client.smembers('articles::sources', function(err, sources){
+		var map = {
+			"sun": {
+				dhivehi:"ސަން",  
+				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119077/sun_ocinbk.png", 
+				english:"Sun",
+				type:"News & current affairs"
+			},
+			"haveeru": {
+				dhivehi: "ހަވީރު",
+				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119077/haveeru_r96ko1.png", 
+				english:"Haveeru",
+				type:"News & current affairs"
+
+			},
+			"mvyouth": {
+				dhivehi: "އެމްވީ ޔޫތު",
+				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119080/mvyouth_ntbeqd.png", 
+				english:"Mv Youth",
+				type:"News & current affairs"
+
+			},
+			"mvexposed": {
+				dhivehi:"އެމްވީ އެކްސްޕޯސްޑ",  
+				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119076/mvexposed_vaqw9j.png", 
+				english:"Mv Exposed",
+				type:"Amateur news"
+
+			},
+			"vmedia": {
+				dhivehi:"ވީ މީޑިއާ",  
+				image_url:"http://res.cloudinary.com/iulogy/image/upload/c_crop,h_56,x_50,y_43/v1367119076/vmedia_wxsmdm.png", 
+				english:"vMedia",
+				type:"News & current affairs"
+
+			},
+			"raajje": {
+				dhivehi:"ރާއްޖެ",  
+				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119078/raajje_p8cz4e.png", 
+				english:"Raajje",
+				type:"News & current affairs"
+
+			},
+			"dhitv": {
+				dhivehi:"ދިޓީވީ",  
+				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119077/dhitv_bs4wix.png", 
+				english:"DhiTv",
+				type:"News & current affairs"
+
+			},
+			"adduonline": {
+				dhivehi:"އައްޑޫ އޮންލައިން",  
+				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119077/adduonline_eaxmvq.png", 
+				english:"Addu Online",
+				type:"News & current affairs"
+
+			},
+			"newdhivehiobserver": {
+				dhivehi:"ނިއު ދިވެހި އޮބްސާވަރ",  
+				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119079/newdhivehiobserver_qlperc.png", 
+				english:"New Dhivehi Observer",
+				type:"Amateur news"
+
+			},
+			"police": {
+				dhivehi:"ޕޮލިސް",  
+				image_url:"http://res.cloudinary.com/iulogy/image/upload/c_crop,g_south_west,h_85,w_87/v1367119079/police_iqklvq.png", 
+				english:"Maldives Police Service",
+				type:"Institutional news and information"
+
+			},
+			"fanvai": {
+				dhivehi:"ފަންވަތް",  
+				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119078/fanvai_pb7pgq.png", 
+				english:"Fanvai",
+				type:"Amateur information"
+
+			},
+			"dhiislam": {
+				dhivehi:"ދި އިސްލާމް",  
+				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119076/dhiislam_ilcd58.png", 
+				english:"Dhi Islam",
+				type:"News & current affairs"
+
+			},
+			"minivannews": {
+				dhivehi:"މިނިވަން",  
+				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119080/minivannews_zyac0q.png", 
+				english:"Minivan News",
+				type:"News & current affairs"
+			}
+		}
+		for(var i=0; i<sources.length; i++){
+			sources[i] = map[sources[i]];
+		}		
 		res.json({sources:sources});
 	})
 })
 app.get('/fetch', function(req, res){
-	var cmd;
 	client.smembers('articles::sources', function(err, sources){
 		var build = {
 			content:{}
@@ -97,6 +190,7 @@ app.get('/fetch/:source/:url', function(req,res){
  		res.json(obj);
 	 });
 });
+
 
 
 http.createServer(app).listen(app.get('port'), function(){
