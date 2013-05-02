@@ -10,6 +10,11 @@ var express = require('express')
   , path = require('path')
   , redis = require('redis')
   , async = require('async')
+  , mongoose = require('mongoose')
+
+var idb = mongoose.createConnection('mongodb://localhost/featured');
+var featured = idb.model('tweets', mongoose.Schema({},{strict:false}));
+
 
 var client = redis.createClient();
 
@@ -45,12 +50,14 @@ app.get('/sources', function(req,res){
 	client.smembers('articles::sources', function(err, sources){
 		var map = {
 			"sun": {
+				name:"sun",
 				dhivehi:"ސަން",  
 				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119077/sun_ocinbk.png", 
 				english:"Sun",
 				type:"News & current affairs"
 			},
 			"haveeru": {
+				name:"haveeru",
 				dhivehi: "ހަވީރު",
 				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119077/haveeru_r96ko1.png", 
 				english:"Haveeru",
@@ -58,6 +65,7 @@ app.get('/sources', function(req,res){
 
 			},
 			"mvyouth": {
+				name:"mvyouth",
 				dhivehi: "އެމްވީ ޔޫތު",
 				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119080/mvyouth_ntbeqd.png", 
 				english:"Mv Youth",
@@ -65,6 +73,7 @@ app.get('/sources', function(req,res){
 
 			},
 			"mvexposed": {
+				name:"mvexposed",
 				dhivehi:"އެމްވީ އެކްސްޕޯސްޑ",  
 				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119076/mvexposed_vaqw9j.png", 
 				english:"Mv Exposed",
@@ -72,6 +81,7 @@ app.get('/sources', function(req,res){
 
 			},
 			"vmedia": {
+				name:"vmedia",
 				dhivehi:"ވީ މީޑިއާ",  
 				image_url:"http://res.cloudinary.com/iulogy/image/upload/c_crop,h_56,x_50,y_43/v1367119076/vmedia_wxsmdm.png", 
 				english:"vMedia",
@@ -79,6 +89,7 @@ app.get('/sources', function(req,res){
 
 			},
 			"raajje": {
+				name:"raajje",
 				dhivehi:"ރާއްޖެ",  
 				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119078/raajje_p8cz4e.png", 
 				english:"Raajje",
@@ -86,6 +97,7 @@ app.get('/sources', function(req,res){
 
 			},
 			"dhitv": {
+				name:"dhitv",
 				dhivehi:"ދިޓީވީ",  
 				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119077/dhitv_bs4wix.png", 
 				english:"DhiTv",
@@ -93,6 +105,7 @@ app.get('/sources', function(req,res){
 
 			},
 			"adduonline": {
+				name:"adduonline",
 				dhivehi:"އައްޑޫ އޮންލައިން",  
 				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119077/adduonline_eaxmvq.png", 
 				english:"Addu Online",
@@ -100,6 +113,7 @@ app.get('/sources', function(req,res){
 
 			},
 			"newdhivehiobserver": {
+				name:"newdhivehiobserver",
 				dhivehi:"ނިއު ދިވެހި އޮބްސާވަރ",  
 				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119079/newdhivehiobserver_qlperc.png", 
 				english:"New Dhivehi Observer",
@@ -107,6 +121,7 @@ app.get('/sources', function(req,res){
 
 			},
 			"police": {
+				name:"police",
 				dhivehi:"ޕޮލިސް",  
 				image_url:"http://res.cloudinary.com/iulogy/image/upload/c_crop,g_south_west,h_85,w_87/v1367119079/police_iqklvq.png", 
 				english:"Maldives Police Service",
@@ -114,6 +129,7 @@ app.get('/sources', function(req,res){
 
 			},
 			"fanvai": {
+				name:"fanvai",
 				dhivehi:"ފަންވަތް",  
 				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119078/fanvai_pb7pgq.png", 
 				english:"Fanvai",
@@ -121,6 +137,7 @@ app.get('/sources', function(req,res){
 
 			},
 			"dhiislam": {
+				name:"dhiislam",
 				dhivehi:"ދި އިސްލާމް",  
 				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119076/dhiislam_ilcd58.png", 
 				english:"Dhi Islam",
@@ -128,6 +145,7 @@ app.get('/sources', function(req,res){
 
 			},
 			"minivannews": {
+				name:"minivannews",
 				dhivehi:"މިނިވަން",  
 				image_url:"http://res.cloudinary.com/iulogy/image/upload/v1367119080/minivannews_zyac0q.png", 
 				english:"Minivan News",
@@ -191,7 +209,13 @@ app.get('/fetch/:source/:url', function(req,res){
 	 });
 });
 
-
+app.get('/pictures', function(req, res){
+	featured.find({})
+	.sort({_id:-1})
+	.exec(function(err, pics){
+		res.json(pics);
+	})
+});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));

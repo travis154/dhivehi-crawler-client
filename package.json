@@ -11,6 +11,7 @@
     "underscore": "~1.4.2",
     "redis": "~0.8.2",
     "hiredis": "~0.1.14",
-    "async": "~0.1.22"
+    "async": "~0.1.22",
+    "mongoose": "~3.6.8"
   }
 }
